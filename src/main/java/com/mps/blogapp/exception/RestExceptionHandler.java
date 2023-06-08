@@ -1,11 +1,13 @@
 package com.mps.blogapp.exception;
 
+import com.mps.blogapp.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,8 +15,9 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class RestExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException manve){
+    public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException manve){
         String msg=manve.toString();
+        System.out.println(manve.getMessage());
         List<String> errors = Arrays.asList(msg).stream().map(str -> {
             int startIndex = 0, endIndex = str.length() - 1;
             for (int i = str.length() - 1; i >= 0; i--) {
@@ -27,6 +30,6 @@ public class RestExceptionHandler {
             }
             return str.substring(startIndex, endIndex);
         }).collect(Collectors.toList());
-        return new ResponseEntity<>(errors.get(0), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ApiResponse(errors.get(0), false), HttpStatus.BAD_REQUEST);
     }
 }
