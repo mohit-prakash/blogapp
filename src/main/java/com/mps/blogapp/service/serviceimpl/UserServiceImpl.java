@@ -21,17 +21,17 @@ public class UserServiceImpl implements IUserService {
     private ModelMapper modelMapper;
 
     @Override
-    public UserDto addUser(User user) {
-        User savedUser = userRepo.save(user);
-        UserDto userDto = modelMapper.map(savedUser, UserDto.class);
-        return userDto;
+    public UserDto addUser(UserDto userDto) {
+        User user = modelMapper.map(userDto, User.class);
+        userRepo.save(user);
+        return modelMapper.map(user,UserDto.class);
     }
 
     @Override
-    public UserDto updateUser(User user, Long userId) {
+    public UserDto updateUser(UserDto userDto, Long userId) {
         User user1 = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with this id " + userId));
-        user1.setUserEmail(user.getUserEmail());
-        user1.setUsername(user.getUsername());
+        user1.setUserEmail(userDto.getUserEmail());
+        user1.setUsername(userDto.getUsername());
         userRepo.save(user1);
         return modelMapper.map(user1,UserDto.class);
     }
