@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,13 +18,13 @@ public class CategoryController {
     @Autowired
     private ICategoryService categoryService;
     @PostMapping("/add")
-    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryDto categoryDto){
+    public ResponseEntity<CategoryDto> addCategory(@Valid @RequestBody CategoryDto categoryDto){
         CategoryDto addedCategoryDto = categoryService.addCategory(categoryDto);
         return new ResponseEntity<>(addedCategoryDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{catId}")
-    public ResponseEntity<ApiResponse> updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable Long catId){
+    public ResponseEntity<ApiResponse> updateCategory(@Valid @RequestBody CategoryDto categoryDto, @PathVariable Long catId){
         try{
             categoryService.updateCategory(categoryDto, catId);
             return new ResponseEntity<>(new ApiResponse("Category "+catId+" updated!!",true),HttpStatus.CREATED);
