@@ -4,8 +4,11 @@ import com.mps.blogapp.entity.Category;
 import com.mps.blogapp.entity.Post;
 import com.mps.blogapp.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post,Long> {
-    Post findByCategory(Category category);
-    Post findByUser(User user);
+    List<Post> findByCategory(Category category);
+    List<Post> findByUser(User user);
 }

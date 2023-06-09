@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface IPostService {
     PostDto addPost(PostDto postDto,Long userId,Long catId);
-    PostDto updatePost(PostDto postDto, Long postId);
+    PostDto updatePost(PostDto postDto, Long postId,Long catId);
     void removePost(Long postId);
     PostDto getPost(Long postId);
     List<PostDto> getAllPost();
-    PostDto getPostByCatId(Long catId);
-    PostDto getPostByUserId(Long userId);
+    List<PostDto> getPostsByCatId(Long catId);
+    List<PostDto> getPostsByUserId(Long userId);
 }

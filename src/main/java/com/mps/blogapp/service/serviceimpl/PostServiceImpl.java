@@ -38,17 +38,23 @@ public class PostServiceImpl implements IPostService {
         postDto.setUserDto(modelMapper.map(user, UserDto.class));
         Post post = modelMapper.map(postDto, Post.class);
         Post savedPost = postRepository.save(post);
-        return modelMapper.map(savedPost, PostDto.class);
+        postDto.setPostId(savedPost.getPostId());
+        return postDto;
     }
 
     @Override
-    public PostDto updatePost(PostDto postDto, Long postId) {
+    public PostDto updatePost(PostDto postDto, Long postId,Long catId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found with this id " + postId));
+        Category category = categoryRepository.findById(catId).orElseThrow(() -> new ResourceNotFoundException("Category " + catId + " not found!!"));
         post.setPostTitle(postDto.getPostTitle());
         post.setPostDate(postDto.getPostDate());
         post.setPostDescription(postDto.getPostDescription());
+        post.setCategory(category);
         postRepository.save(post);
-        return modelMapper.map(post, PostDto.class);
+        PostDto postDto1 = modelMapper.map(post, PostDto.class);
+        postDto1.setCategoryDto(modelMapper.map(category, CategoryDto.class));
+        postDto1.setUserDto(modelMapper.map(post.getUser(), UserDto.class));
+        return postDto1;
     }
 
     @Override
@@ -60,27 +66,49 @@ public class PostServiceImpl implements IPostService {
     @Override
     public PostDto getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found with this id " + postId));
-        return modelMapper.map(post, PostDto.class);
+        PostDto postDto = modelMapper.map(post, PostDto.class);
+        postDto.setCategoryDto(modelMapper.map(post.getCategory(), CategoryDto.class));
+        postDto.setUserDto(modelMapper.map(post.getUser(), UserDto.class));
+        return postDto;
     }
 
     @Override
     public List<PostDto> getAllPost() {
         List<Post> posts = postRepository.findAll();
+        List<CategoryDto> categoryDtos = posts.stream().map(post -> modelMapper.map(post.getCategory(), CategoryDto.class)).collect(Collectors.toList());
+        List<UserDto> userDtos = posts.stream().map(post -> modelMapper.map(post.getUser(), UserDto.class)).collect(Collectors.toList());
         List<PostDto> postDtoList = posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        int i=0;
+        for(PostDto postDto:postDtoList){
+            postDto.setCategoryDto(categoryDtos.get(i));
+            postDto.setUserDto(userDtos.get(i++));
+        }
         return postDtoList;
     }
 
     @Override
-    public PostDto getPostByCatId(Long catId) {
+    public List<PostDto> getPostsByCatId(Long catId) {
         Category category = categoryRepository.findById(catId).orElseThrow(()->new ResourceNotFoundException("Category "+catId+" not found!!"));
-        Post post = postRepository.findByCategory(category);
-        return modelMapper.map(post, PostDto.class);
+        List<Post> posts = postRepository.findByCategory(category);
+        List<PostDto> postDtos = posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        int i=0;
+        for (PostDto postDto: postDtos){
+            postDto.setCategoryDto(modelMapper.map(category, CategoryDto.class));
+            postDto.setUserDto(modelMapper.map(posts.get(i++).getUser(), UserDto.class));
+        }
+        return postDtos;
     }
 
     @Override
-    public PostDto getPostByUserId(Long userId) {
+    public List<PostDto> getPostsByUserId(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("User "+userId+" not found!!"));
-        Post post = postRepository.findByUser(user);
-        return modelMapper.map(post, PostDto.class);
+        List<Post> posts = postRepository.findByUser(user);
+        List<PostDto> postDtos = posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        int i=0;
+        for (PostDto postDto:postDtos){
+            postDto.setUserDto(modelMapper.map(user, UserDto.class));
+            postDto.setCategoryDto(modelMapper.map(posts.get(i++).getCategory(), CategoryDto.class));
+        }
+        return postDtos;
     }
 }

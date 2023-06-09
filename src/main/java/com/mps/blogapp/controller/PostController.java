@@ -17,14 +17,18 @@ public class PostController {
     @Autowired
     private IPostService postService;
     @PostMapping("/post/user/{userId}/category/{catId}")
-    public ResponseEntity<PostDto> addPost(@RequestBody PostDto postDto,@PathVariable Long userId,@PathVariable Long catId){
-        PostDto addedPostDto = postService.addPost(postDto,userId,catId);
-        return new ResponseEntity<>(addedPostDto, HttpStatus.CREATED);
-    }
-    @PutMapping("update/{postId}")
-    public ResponseEntity<?> updatePost(@RequestBody PostDto postDto, @PathVariable Long postId){
+    public ResponseEntity<?> addPost(@RequestBody PostDto postDto,@PathVariable Long userId,@PathVariable Long catId){
         try {
-            PostDto updatedPostDto = postService.updatePost(postDto, postId);
+            PostDto addedPostDto = postService.addPost(postDto, userId, catId);
+            return new ResponseEntity<>(addedPostDto, HttpStatus.CREATED);
+        }catch (ResourceNotFoundException rnfe){
+            return new ResponseEntity<>(rnfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+    @PutMapping("update/{postId}/category/{catId}")
+    public ResponseEntity<?> updatePost(@RequestBody PostDto postDto, @PathVariable Long postId,@PathVariable Long catId){
+        try {
+            PostDto updatedPostDto = postService.updatePost(postDto, postId,catId);
             return new ResponseEntity<>(updatedPostDto, HttpStatus.CREATED);
         }catch (ResourceNotFoundException rnfe){
             return new ResponseEntity<>(rnfe.getMessage(), HttpStatus.NOT_FOUND);
@@ -59,8 +63,8 @@ public class PostController {
     @GetMapping("/getbycategory")
     public ResponseEntity<?> getPostByCategory(@RequestParam(name = "catId") Long catId){
         try {
-            PostDto postDto = postService.getPostByCatId(catId);
-            return new ResponseEntity<>(postDto,HttpStatus.OK);
+            List<PostDto> postDtos = postService.getPostsByCatId(catId);
+            return new ResponseEntity<>(postDtos,HttpStatus.OK);
         } catch (ResourceNotFoundException rnfe){
             return new ResponseEntity<>(new ApiResponse(rnfe.getMessage(), false),HttpStatus.NOT_FOUND);
         }
@@ -69,8 +73,8 @@ public class PostController {
     @GetMapping("/getbyuser")
     public ResponseEntity<?> getPostByUser(@RequestParam(name = "userId") Long userId){
         try {
-            PostDto postDto = postService.getPostByUserId(userId);
-            return new ResponseEntity<>(postDto,HttpStatus.OK);
+            List<PostDto> postDtos = postService.getPostsByUserId(userId);
+            return new ResponseEntity<>(postDtos,HttpStatus.OK);
         } catch (ResourceNotFoundException rnfe){
             return new ResponseEntity<>(new ApiResponse(rnfe.getMessage(), false),HttpStatus.NOT_FOUND);
         }
