@@ -2,6 +2,8 @@ package com.mps.blogapp.entity;
 
 import lombok.Data;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "category_tab")
@@ -14,4 +16,6 @@ public class Category {
     @Column(name = "catTitle")
     private String catTitle;
     private String catDescription;
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "category")
+    private List<Post> posts = new ArrayList<>();
 }
