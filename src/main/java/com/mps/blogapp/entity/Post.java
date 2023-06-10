@@ -1,13 +1,16 @@
 package com.mps.blogapp.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "post_tab")
 public class Post {
     @Id

@@ -11,7 +11,7 @@ public interface IPostService {
     PostDto updatePost(PostDto postDto, Long postId,Long catId);
     void removePost(Long postId);
     PostDto getPost(Long postId);
-    List<PostDto> getAllPost();
+    List<PostDto> getAllPost(Integer pageNumber, Integer pageSize);
     List<PostDto> getPostsByCatId(Long catId);
     List<PostDto> getPostsByUserId(Long userId);
 }
