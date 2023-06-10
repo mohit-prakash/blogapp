@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.mps.blogapp.constant.Constant.*;
+
 @RestController
 @RequestMapping("/api/v3")
 public class PostController {
@@ -57,10 +59,10 @@ public class PostController {
     }
 
     @GetMapping("/getall")
-    public ResponseEntity<PostResponse> getAllPosts(@RequestParam(defaultValue = "0",required = false) Integer pageNumber,
-                                                    @RequestParam(defaultValue = "10",required = false) Integer pageSize,
-                                                    @RequestParam(defaultValue = "postId",required = false) String sortBy,
-                                                    @RequestParam(defaultValue = "asc",required = false)String sortDir){
+    public ResponseEntity<PostResponse> getAllPosts(@RequestParam(defaultValue = PAGE_NUMBER,required = false) Integer pageNumber,
+                                                    @RequestParam(defaultValue = PAGE_SIZE,required = false) Integer pageSize,
+                                                    @RequestParam(defaultValue = SORT_BY,required = false) String sortBy,
+                                                    @RequestParam(defaultValue = SORT_DIR,required = false)String sortDir){
         return new ResponseEntity<>(postService.getAllPost(pageNumber,pageSize,sortBy,sortDir),HttpStatus.OK);
     }
 
