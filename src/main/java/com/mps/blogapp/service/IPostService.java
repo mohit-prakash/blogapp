@@ -12,7 +12,7 @@ public interface IPostService {
     PostDto updatePost(PostDto postDto, Long postId,Long catId);
     void removePost(Long postId);
     PostDto getPost(Long postId);
-    PostResponse getAllPost(Integer pageNumber, Integer pageSize);
+    PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy);
     List<PostDto> getPostsByCatId(Long catId);
     List<PostDto> getPostsByUserId(Long userId);
 }
