@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,4 +18,5 @@ public class PostDto {
     private LocalDate postDate=LocalDate.now();
     private CategoryDto categoryDto;
     private UserDto userDto;
+    private Set<CommentDto> commentDtos;
 }
