@@ -2,6 +2,7 @@ package com.mps.blogapp.service.serviceimpl;
 
 import com.mps.blogapp.dto.CategoryDto;
 import com.mps.blogapp.dto.PostDto;
+import com.mps.blogapp.dto.PostResponse;
 import com.mps.blogapp.dto.UserDto;
 import com.mps.blogapp.entity.Category;
 import com.mps.blogapp.entity.Post;
@@ -76,7 +77,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public List<PostDto> getAllPost(Integer pageNumber, Integer pageSize) {
+    public PostResponse getAllPost(Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
         Page<Post> postPage = postRepository.findAll(pageable);
         List<Post> posts = postPage.getContent();
@@ -88,7 +89,14 @@ public class PostServiceImpl implements IPostService {
             postDto.setCategoryDto(categoryDtos.get(i));
             postDto.setUserDto(userDtos.get(i++));
         }
-        return postDtoList;
+        PostResponse postResponse = new PostResponse();
+        postResponse.setPostDtos(postDtoList);
+        postResponse.setPageNumber(postPage.getNumber());
+        postResponse.setPageSize(postPage.getSize());
+        postResponse.setTotalElements(postPage.getTotalElements());
+        postResponse.setTotalPages(postPage.getTotalPages());
+        postResponse.setIsLastPage(postPage.isLast());
+        return postResponse;
     }
 
     @Override

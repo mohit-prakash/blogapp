@@ -2,6 +2,7 @@ package com.mps.blogapp.controller;
 
 import com.mps.blogapp.dto.ApiResponse;
 import com.mps.blogapp.dto.PostDto;
+import com.mps.blogapp.dto.PostResponse;
 import com.mps.blogapp.exception.ResourceNotFoundException;
 import com.mps.blogapp.service.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ public class PostController {
     }
 
     @GetMapping("/getall")
-    public ResponseEntity<List<PostDto>> getAllPosts(@RequestParam(defaultValue = "0",required = false) Integer pageNumber, @RequestParam(defaultValue = "10",required = false) Integer pageSize){
+    public ResponseEntity<PostResponse> getAllPosts(@RequestParam(defaultValue = "0",required = false) Integer pageNumber, @RequestParam(defaultValue = "10",required = false) Integer pageSize){
         return new ResponseEntity<>(postService.getAllPost(pageNumber,pageSize),HttpStatus.OK);
     }
 
