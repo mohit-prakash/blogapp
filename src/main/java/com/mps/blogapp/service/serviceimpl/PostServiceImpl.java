@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -77,8 +78,14 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public PostResponse getAllPost(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+    public PostResponse getAllPost(Integer pageNumber, Integer pageSize,String sortBy) {
+        Sort sort=null;
+        if (("dsc").equalsIgnoreCase(sortBy)){
+            sort = Sort.by(sortBy).descending();
+        }else {
+            sort = Sort.by(sortBy).ascending();
+        }
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
         Page<Post> postPage = postRepository.findAll(pageable);
         List<Post> posts = postPage.getContent();
         List<CategoryDto> categoryDtos = posts.stream().map(post -> modelMapper.map(post.getCategory(), CategoryDto.class)).collect(Collectors.toList());
