@@ -131,4 +131,16 @@ public class PostServiceImpl implements IPostService {
         }
         return postDtos;
     }
+
+    @Override
+    public List<PostDto> searchPost(String keyword) {
+        List<Post> posts = postRepository.findByPostTitleContaining(keyword);
+        List<PostDto> postDtos = posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        int i=0;
+        for (PostDto postDto:postDtos){
+            postDto.setCategoryDto(modelMapper.map(posts.get(i).getCategory(), CategoryDto.class));
+            postDto.setUserDto(modelMapper.map(posts.get(i++).getUser(), UserDto.class));
+        }
+        return postDtos;
+    }
 }

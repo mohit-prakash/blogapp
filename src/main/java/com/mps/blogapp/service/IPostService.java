@@ -15,4 +15,5 @@ public interface IPostService {
     PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy,String sortDir);
     List<PostDto> getPostsByCatId(Long catId);
     List<PostDto> getPostsByUserId(Long userId);
+    List<PostDto> searchPost(String keyword);
 }
