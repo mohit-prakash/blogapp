@@ -15,6 +15,9 @@ import com.mps.blogapp.service.IPostService;
 import com.mps.blogapp.service.IUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,8 +76,10 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public List<PostDto> getAllPost() {
-        List<Post> posts = postRepository.findAll();
+    public List<PostDto> getAllPost(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<Post> postPage = postRepository.findAll(pageable);
+        List<Post> posts = postPage.getContent();
         List<CategoryDto> categoryDtos = posts.stream().map(post -> modelMapper.map(post.getCategory(), CategoryDto.class)).collect(Collectors.toList());
         List<UserDto> userDtos = posts.stream().map(post -> modelMapper.map(post.getUser(), UserDto.class)).collect(Collectors.toList());
         List<PostDto> postDtoList = posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
