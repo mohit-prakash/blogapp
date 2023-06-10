@@ -78,9 +78,9 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public PostResponse getAllPost(Integer pageNumber, Integer pageSize,String sortBy) {
+    public PostResponse getAllPost(Integer pageNumber, Integer pageSize,String sortBy,String sortDir) {
         Sort sort=null;
-        if (("dsc").equalsIgnoreCase(sortBy)){
+        if (("dsc").equalsIgnoreCase(sortDir)){
             sort = Sort.by(sortBy).descending();
         }else {
             sort = Sort.by(sortBy).ascending();
