@@ -83,4 +83,10 @@ public class PostController {
             return new ResponseEntity<>(new ApiResponse(rnfe.getMessage(), false),HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<List<PostDto>> getPostsUsingKeyword(@PathVariable String keyword){
+        List<PostDto> postDtos = postService.searchPost(keyword);
+        return new ResponseEntity<>(postDtos,HttpStatus.OK);
+    }
 }
