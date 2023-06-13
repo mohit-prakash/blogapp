@@ -1,14 +1,12 @@
 package com.mps.blogapp.service.serviceimpl;
 
-import com.mps.blogapp.dto.CategoryDto;
-import com.mps.blogapp.dto.PostDto;
-import com.mps.blogapp.dto.PostResponse;
-import com.mps.blogapp.dto.UserDto;
+import com.mps.blogapp.dto.*;
 import com.mps.blogapp.entity.Category;
 import com.mps.blogapp.entity.Post;
 import com.mps.blogapp.entity.User;
 import com.mps.blogapp.exception.ResourceNotFoundException;
 import com.mps.blogapp.repository.CategoryRepository;
+import com.mps.blogapp.repository.CommentRepository;
 import com.mps.blogapp.repository.PostRepository;
 import com.mps.blogapp.repository.UserRepository;
 import com.mps.blogapp.service.ICategoryService;
@@ -23,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +32,8 @@ public class PostServiceImpl implements IPostService {
     private CategoryRepository categoryRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private CommentRepository commentRepository;
     @Autowired
     private UserRepository userRepository;
     @Override
@@ -74,6 +75,14 @@ public class PostServiceImpl implements IPostService {
         PostDto postDto = modelMapper.map(post, PostDto.class);
         postDto.setCategoryDto(modelMapper.map(post.getCategory(), CategoryDto.class));
         postDto.setUserDto(modelMapper.map(post.getUser(), UserDto.class));
+        Set<CommentDto> commentDtos = commentRepository.findByPost(post).stream()
+                .map(comment -> {
+                    CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
+                    commentDto.setUserDto(modelMapper.map(comment.getUser(), UserDto.class));
+                    return commentDto;
+                })
+                .collect(Collectors.toSet());
+        postDto.setCommentDtos(commentDtos);
         return postDto;
     }
 
@@ -95,6 +104,17 @@ public class PostServiceImpl implements IPostService {
         for(PostDto postDto:postDtoList){
             postDto.setCategoryDto(categoryDtos.get(i));
             postDto.setUserDto(userDtos.get(i++));
+            Set<CommentDto> commentDtos = commentRepository.findByPost(
+                            modelMapper.map(postDto, Post.class))
+                    .stream().collect(Collectors.toSet())
+                    .stream().map(comment ->
+                            {
+                                CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
+                                commentDto.setUserDto(modelMapper.map(comment.getUser(), UserDto.class));
+                                return commentDto;
+                            })
+                    .collect(Collectors.toSet());
+            postDto.setCommentDtos(commentDtos);
         }
         PostResponse postResponse = new PostResponse();
         postResponse.setPostDtos(postDtoList);

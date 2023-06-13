@@ -7,6 +7,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -27,4 +29,7 @@ public class Post {
     @ManyToOne
     private User user;
     //without user and category post cannot be created
+    //one post can have many post, hence one to many
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    private Set<Comment> comments=new HashSet<>();
 }
