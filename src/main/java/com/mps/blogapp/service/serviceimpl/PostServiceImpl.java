@@ -69,8 +69,12 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public void removePost(Long postId) {
+    public void removePost(Long postId,Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found with this id " + postId));
+        userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("User "+userId+" not found."));
+        if (post.getUser().getUserId()!=userId){
+            throw new NotValidUser("User "+userId+" is not a valid user to delete this post.");
+        }
         postRepository.delete(post);
     }
 
