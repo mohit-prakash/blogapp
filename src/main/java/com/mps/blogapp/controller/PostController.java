@@ -3,6 +3,7 @@ package com.mps.blogapp.controller;
 import com.mps.blogapp.dto.ApiResponse;
 import com.mps.blogapp.dto.PostDto;
 import com.mps.blogapp.dto.PostResponse;
+import com.mps.blogapp.exception.NotValidUser;
 import com.mps.blogapp.exception.ResourceNotFoundException;
 import com.mps.blogapp.service.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +29,15 @@ public class PostController {
             return new ResponseEntity<>(rnfe.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
-    @PutMapping("update/{postId}/category/{catId}")
-    public ResponseEntity<?> updatePost(@RequestBody PostDto postDto, @PathVariable Long postId,@PathVariable Long catId){
+    @PutMapping("update/post/{postId}/category/{catId}/user/{userId}")
+    public ResponseEntity<?> updatePost(@RequestBody PostDto postDto, @PathVariable Long postId,@PathVariable Long catId, @PathVariable Long userId){
         try {
-            PostDto updatedPostDto = postService.updatePost(postDto, postId,catId);
+            PostDto updatedPostDto = postService.updatePost(postDto, postId,catId,userId);
             return new ResponseEntity<>(updatedPostDto, HttpStatus.CREATED);
         }catch (ResourceNotFoundException rnfe){
-            return new ResponseEntity<>(rnfe.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ApiResponse(rnfe.getMessage(), false), HttpStatus.NOT_FOUND);
+        }catch (NotValidUser nvu){
+            return new ResponseEntity<>(new ApiResponse(nvu.getMessage(), false),HttpStatus.UNAUTHORIZED);
         }
     }
 
