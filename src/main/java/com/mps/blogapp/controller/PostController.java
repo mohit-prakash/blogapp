@@ -41,13 +41,15 @@ public class PostController {
         }
     }
 
-    @DeleteMapping("/remove/{postId}")
-    public ResponseEntity<ApiResponse> removePost(@PathVariable Long postId){
+    @DeleteMapping("/remove/{postId}/user/{userId}")
+    public ResponseEntity<ApiResponse> removePost(@PathVariable Long postId,@PathVariable Long userId){
         try{
-            postService.removePost(postId);
+            postService.removePost(postId,userId);
             return new ResponseEntity<>(new ApiResponse("Post "+postId+" removed!!",true),HttpStatus.OK);
         }catch (ResourceNotFoundException rnfe){
             return new ResponseEntity<>(new ApiResponse(rnfe.getMessage(), false),HttpStatus.NOT_FOUND);
+        }catch (NotValidUser nvu){
+            return new ResponseEntity<>(new ApiResponse(nvu.getMessage(), false),HttpStatus.UNAUTHORIZED);
         }
     }
 

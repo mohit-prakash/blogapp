@@ -10,7 +10,7 @@ import java.util.List;
 public interface IPostService {
     PostDto addPost(PostDto postDto,Long userId,Long catId);
     PostDto updatePost(PostDto postDto, Long postId,Long catId,Long userId);
-    void removePost(Long postId);
+    void removePost(Long postId,Long userId);
     PostDto getPost(Long postId);
     PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy,String sortDir);
     List<PostDto> getPostsByCatId(Long catId);
