@@ -65,6 +65,14 @@ public class PostServiceImpl implements IPostService {
         PostDto postDto1 = modelMapper.map(post, PostDto.class);
         postDto1.setCategoryDto(modelMapper.map(category, CategoryDto.class));
         postDto1.setUserDto(modelMapper.map(post.getUser(), UserDto.class));
+        Set<CommentDto> commentDtos = commentRepository.findByPost(post).stream()
+                .map(comment -> {
+                    CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
+                    commentDto.setUserDto(modelMapper.map(comment.getUser(), UserDto.class));
+                    return commentDto;
+                })
+                .collect(Collectors.toSet());
+        postDto1.setCommentDtos(commentDtos);
         return postDto1;
     }
 
@@ -143,7 +151,14 @@ public class PostServiceImpl implements IPostService {
         int i=0;
         for (PostDto postDto: postDtos){
             postDto.setCategoryDto(modelMapper.map(category, CategoryDto.class));
-            postDto.setUserDto(modelMapper.map(posts.get(i++).getUser(), UserDto.class));
+            postDto.setUserDto(modelMapper.map(posts.get(i).getUser(), UserDto.class));
+            postDto.setCommentDtos(posts.get(i++).getComments().stream()
+                    .map(comment -> {
+                        CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
+                        commentDto.setUserDto(modelMapper.map(comment.getUser(), UserDto.class));
+                        return commentDto;
+                    })
+                    .collect(Collectors.toSet()));
         }
         return postDtos;
     }
@@ -156,7 +171,14 @@ public class PostServiceImpl implements IPostService {
         int i=0;
         for (PostDto postDto:postDtos){
             postDto.setUserDto(modelMapper.map(user, UserDto.class));
-            postDto.setCategoryDto(modelMapper.map(posts.get(i++).getCategory(), CategoryDto.class));
+            postDto.setCategoryDto(modelMapper.map(posts.get(i).getCategory(), CategoryDto.class));
+            postDto.setCommentDtos(posts.get(i++).getComments().stream()
+                    .map(comment -> {
+                        CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
+                        commentDto.setUserDto(modelMapper.map(comment.getUser(), UserDto.class));
+                        return commentDto;
+                    })
+                    .collect(Collectors.toSet()));
         }
         return postDtos;
     }
@@ -168,7 +190,14 @@ public class PostServiceImpl implements IPostService {
         int i=0;
         for (PostDto postDto:postDtos){
             postDto.setCategoryDto(modelMapper.map(posts.get(i).getCategory(), CategoryDto.class));
-            postDto.setUserDto(modelMapper.map(posts.get(i++).getUser(), UserDto.class));
+            postDto.setUserDto(modelMapper.map(posts.get(i).getUser(), UserDto.class));
+            postDto.setCommentDtos(posts.get(i++).getComments().stream()
+                    .map(comment -> {
+                        CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
+                        commentDto.setUserDto(modelMapper.map(comment.getUser(), UserDto.class));
+                        return commentDto;
+                    })
+                    .collect(Collectors.toSet()));
         }
         return postDtos;
     }
