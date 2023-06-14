@@ -4,6 +4,7 @@ import com.mps.blogapp.dto.*;
 import com.mps.blogapp.entity.Category;
 import com.mps.blogapp.entity.Post;
 import com.mps.blogapp.entity.User;
+import com.mps.blogapp.exception.NotValidUser;
 import com.mps.blogapp.exception.ResourceNotFoundException;
 import com.mps.blogapp.repository.CategoryRepository;
 import com.mps.blogapp.repository.CommentRepository;
@@ -49,9 +50,13 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public PostDto updatePost(PostDto postDto, Long postId,Long catId) {
+    public PostDto updatePost(PostDto postDto, Long postId,Long catId,Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found with this id " + postId));
         Category category = categoryRepository.findById(catId).orElseThrow(() -> new ResourceNotFoundException("Category " + catId + " not found!!"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User " + userId + " not found."));
+        if (user.getUserId()!=post.getUser().getUserId()){
+            throw new NotValidUser("User "+userId+" is not a valid user to edit this Post.");
+        }
         post.setPostTitle(postDto.getPostTitle());
         post.setPostDate(postDto.getPostDate());
         post.setPostDescription(postDto.getPostDescription());
