@@ -7,6 +7,8 @@ import lombok.Setter;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -18,4 +20,5 @@ public class UserDto {
     private String username;
     @Pattern(regexp = "^[a-z0-9]{3,10}[/@][a-z]{3,10}[.][a-z]{3,7}$",message = "Email should be in proper format!!")
     private String userEmail;
+    private List<RoleDto> roleDtos = new ArrayList<>();
 }

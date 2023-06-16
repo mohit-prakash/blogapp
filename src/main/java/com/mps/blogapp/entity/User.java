@@ -26,4 +26,7 @@ public class User {
     //one user can do multiple post, hence one to many
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private Set<Comment> comments=new HashSet<>();
+    private String password;
+    @ManyToMany(mappedBy = "users",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private List<UserRole> roles = new ArrayList<>();
 }
